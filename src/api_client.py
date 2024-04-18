@@ -35,6 +35,8 @@ def get_last_7_days_data():
 
     log.debug(f"Response status code: {response.status_code}")
 
+    return response.json()["data"]
+
 
 if __name__ == "__main__":
-    get_last_7_days_data()
+    _ = get_last_7_days_data()
