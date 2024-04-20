@@ -1,29 +1,33 @@
-import logging as log
+import logging
+from typing import Any
 import requests
 from base64 import b64encode
 import os
 from dotenv import load_dotenv
 
-log.basicConfig(
-    format="%(asctime)s -- %(levelname)s -- [%(module)s]: %(message)s",
-    datefmt="%Y-%m-%d @ %H:%M:%S",
-    level=log.DEBUG,
-)
+from exception.WakatimeCredentialsMissingErrro import WakatimeCredentialsMissingError
+
+log = logging.getLogger(__name__)
+log.setLevel(logging.DEBUG)
+
+_ = load_dotenv()
 
 
-def get_last_7_days_data():
-    _ = load_dotenv()
-
+def get_last_7_days_data() -> dict[str, dict[str, Any]]:
     base_url: str | None = os.getenv("WAKATIME_BASE_URL")
     api_key: str | None = os.getenv("WAKATIME_API_KEY")
 
     if api_key is None:
         log.error("WAKATIME_API_KEY couldn't be obtained from the .env file")
-        return
+        raise WakatimeCredentialsMissingError(
+            "WAKATIME_API_KEY is None, aborting API call"
+        )
 
     if base_url is None:
         log.error("WAKATIME_BASE_URL couldn't be obtained from the .env file")
-        return
+        raise WakatimeCredentialsMissingError(
+            "WAKATIME_BASE_URL is None, aborting API call"
+        )
 
     api_key_encoded = b64encode(api_key.encode())
 
