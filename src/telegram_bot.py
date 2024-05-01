@@ -7,6 +7,8 @@ from telegram import Update
 from telegram.ext import ApplicationBuilder, ContextTypes, CommandHandler
 
 from api_client import get_last_7_days_data
+from data import Data
+from data_processor import show_pie_chart
 from exception.ChatIdMissingError import ChatIdMissingError
 from exception.WakatimeCredentialsMissingErrro import WakatimeCredentialsMissingError
 
@@ -33,10 +35,12 @@ def initialize_bot():
     application = ApplicationBuilder().token(token).build()
 
     start_handler = CommandHandler("start", start)
+    languages_handler = CommandHandler("languages", languages)
     editors_handler = CommandHandler("editors", editors)
     projects_handler = CommandHandler("projects", projects)
 
     application.add_handler(start_handler)
+    application.add_handler(languages_handler)
     application.add_handler(editors_handler)
     application.add_handler(projects_handler)
 
@@ -50,6 +54,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
         [
             ("/projects", "Projects data"),
             ("/editors", "Editors data"),
+            ("/languages", "Languages data"),
             ("/start", "Start the bot"),
         ]
     )
@@ -69,6 +74,7 @@ async def editors(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     try:
         editors = get_last_7_days_data()["editors"]
+        show_pie_chart([Data(editor) for editor in editors])
         editors = _format_to_json_code_block(editors)
 
         _ = await _send_message(context, update, editors)
@@ -84,11 +90,33 @@ async def editors(update: Update, context: ContextTypes.DEFAULT_TYPE):
         _ = await _send_error(context, update)
 
 
+async def languages(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    log.debug("/languages command was requested")
+
+    try:
+        languages = get_last_7_days_data()["languages"]
+        show_pie_chart([Data(language) for language in languages])
+        languages = _format_to_json_code_block(languages)
+
+        _ = await _send_message(context, update, languages)
+
+    except ChatIdMissingError as e:
+        log.error(str(e))
+        return
+
+    except WakatimeCredentialsMissingError as e:
+        log.debug(
+            f"Couldn't obtain languages info - ({str(e)}), responding with an error"
+        )
+        _ = await _send_error(context, update)
+
+
 async def projects(update: Update, context: ContextTypes.DEFAULT_TYPE):
     log.debug("/projects command was requested")
 
     try:
         projects = get_last_7_days_data()["projects"]
+        show_pie_chart([Data(project) for project in projects])
         projects = _format_to_json_code_block(projects)
 
         _ = await _send_message(context, update, projects)
