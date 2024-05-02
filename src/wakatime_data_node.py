@@ -1,4 +1,4 @@
-class Data:
+class WakatimeDataNode:
     total_seconds: int
     name: str
     percent: float

@@ -7,7 +7,7 @@ from telegram import Update
 from telegram.ext import ApplicationBuilder, ContextTypes, CommandHandler
 
 from api_client import get_last_7_days_data
-from data import Data
+from wakatime_data_node import WakatimeDataNode
 from data_processor import show_pie_chart
 from exception.ChatIdMissingError import ChatIdMissingError
 from exception.WakatimeCredentialsMissingErrro import WakatimeCredentialsMissingError
@@ -74,7 +74,7 @@ async def editors(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     try:
         editors = get_last_7_days_data()["editors"]
-        show_pie_chart([Data(editor) for editor in editors])
+        show_pie_chart([WakatimeDataNode(editor) for editor in editors])
         editors = _format_to_json_code_block(editors)
 
         _ = await _send_message(context, update, editors)
@@ -95,7 +95,7 @@ async def languages(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     try:
         languages = get_last_7_days_data()["languages"]
-        show_pie_chart([Data(language) for language in languages])
+        show_pie_chart([WakatimeDataNode(language) for language in languages])
         languages = _format_to_json_code_block(languages)
 
         _ = await _send_message(context, update, languages)
@@ -116,7 +116,7 @@ async def projects(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     try:
         projects = get_last_7_days_data()["projects"]
-        show_pie_chart([Data(project) for project in projects])
+        show_pie_chart([WakatimeDataNode(project) for project in projects])
         projects = _format_to_json_code_block(projects)
 
         _ = await _send_message(context, update, projects)
