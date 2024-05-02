@@ -42,5 +42,16 @@ def get_last_7_days_data() -> dict[str, dict[str, Any]]:
     return response.json()["data"]
 
 
+def get_github_languages_info() -> str:
+    url = "https://raw.githubusercontent.com/github-linguist/linguist/master/lib/linguist/languages.yml"
+
+    response = requests.get(url)
+
+    log.debug(f"Response status code: {response.status_code}")
+
+    return response.text
+
+
 if __name__ == "__main__":
-    _ = get_last_7_days_data()
+    # _ = get_last_7_days_data()
+    _ = get_github_languages_info()
