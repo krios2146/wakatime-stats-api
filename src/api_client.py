@@ -4,6 +4,7 @@ import requests
 from base64 import b64encode
 import os
 from dotenv import load_dotenv
+from ruamel.yaml import YAML
 
 from exception.WakatimeCredentialsMissingErrro import WakatimeCredentialsMissingError
 
@@ -13,7 +14,7 @@ log.setLevel(logging.DEBUG)
 _ = load_dotenv()
 
 
-def get_last_7_days_data() -> dict[str, dict[str, Any]]:
+def get_last_7_days_data() -> dict[str, dict[str, Any] | list[dict[str, Any]]]:
     base_url: str | None = os.getenv("WAKATIME_BASE_URL")
     api_key: str | None = os.getenv("WAKATIME_API_KEY")
 
@@ -42,14 +43,23 @@ def get_last_7_days_data() -> dict[str, dict[str, Any]]:
     return response.json()["data"]
 
 
-def get_github_languages_info() -> str:
+def get_github_languages_info() -> list[dict[str, Any]]:
     url = "https://raw.githubusercontent.com/github-linguist/linguist/master/lib/linguist/languages.yml"
 
     response = requests.get(url)
 
     log.debug(f"Response status code: {response.status_code}")
 
-    return response.text
+    yaml = YAML()
+    languages: dict[str, Any] = yaml.load(response.text)
+
+    languages_data: list[dict[str, Any]] = []
+
+    for key in languages.keys():
+        language = {"name": key, **languages.get(key)}
+        languages_data.append(language)
+
+    return languages_data
 
 
 if __name__ == "__main__":
