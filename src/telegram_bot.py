@@ -6,7 +6,8 @@ from dotenv import load_dotenv
 from telegram import Update
 from telegram.ext import ApplicationBuilder, ContextTypes, CommandHandler
 
-from api_client import get_last_7_days_data
+from api_client import get_github_languages_info, get_last_7_days_data
+from data_node.github_language_data_node import GithubLanguageDataNode
 from data_node.wakatime_data_node import WakatimeDataNode
 from data_processor import show_pie_chart
 from exception.ChatIdMissingError import ChatIdMissingError
@@ -94,9 +95,20 @@ async def languages(update: Update, context: ContextTypes.DEFAULT_TYPE):
     log.debug("/languages command was requested")
 
     try:
-        languages = get_last_7_days_data()["languages"]
-        show_pie_chart([WakatimeDataNode(language) for language in languages])
-        languages = _format_to_json_code_block(languages)
+        wakatime_languages_response: list[dict[str, Any]] = get_last_7_days_data()[
+            "languages"
+        ]
+        github_languages_response: list[dict[str, Any]] = get_github_languages_info()
+
+        wakatime_languages_data = [
+            WakatimeDataNode(language) for language in wakatime_languages_response
+        ]
+        github_languages_data = [
+            GithubLanguageDataNode(language) for language in github_languages_response
+        ]
+
+        show_pie_chart(wakatime_languages_data, langs_data=github_languages_data)
+        languages: str = _format_to_json_code_block(wakatime_languages_response)
 
         _ = await _send_message(context, update, languages)
 
@@ -147,7 +159,7 @@ async def _send_error(context: ContextTypes.DEFAULT_TYPE, update: Update):
     _ = await _send_message(context, update, error_message)
 
 
-def _format_to_json_code_block(message: dict[str, Any]) -> str:
+def _format_to_json_code_block(message: Any) -> str:
     message_json = json.dumps(message, indent=2)
 
     message_json_block = f"```json\n{message_json}\n```"
