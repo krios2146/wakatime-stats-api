@@ -1,7 +1,7 @@
 import matplotlib
 import matplotlib.pyplot as plt
 
-from data import Data
+from data_node.wakatime_data_node import WakatimeDataNode
 
 matplotlib.use("TkAgg")
 custom_font = {
@@ -15,7 +15,7 @@ GITHUB_BG_COLOR: str = "#0D1117"
 GITHUB_FG_COLOR: str = "#C3D1D9"
 
 
-def show_pie_chart(data_list: list[Data]) -> None:
+def show_pie_chart(data_list: list[WakatimeDataNode]) -> None:
     box, (left_plot, right_plot) = plt.subplots(1, 2)
 
     percents: list[float] = [data.percent for data in data_list[:5]]
