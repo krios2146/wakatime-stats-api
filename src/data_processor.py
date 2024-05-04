@@ -1,6 +1,7 @@
 import matplotlib
 import matplotlib.pyplot as plt
 
+from data_node.github_language_data_node import GithubLanguageDataNode
 from data_node.wakatime_data_node import WakatimeDataNode
 
 matplotlib.use("TkAgg")
@@ -15,7 +16,10 @@ GITHUB_BG_COLOR: str = "#0D1117"
 GITHUB_FG_COLOR: str = "#C3D1D9"
 
 
-def show_pie_chart(data_list: list[WakatimeDataNode]) -> None:
+def show_pie_chart(
+    data_list: list[WakatimeDataNode],
+    langs_data: list[GithubLanguageDataNode] | None = None,
+) -> None:
     box, (left_plot, right_plot) = plt.subplots(1, 2)
 
     percents: list[float] = [data.percent for data in data_list[:5]]
