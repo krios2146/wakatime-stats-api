@@ -7,7 +7,7 @@ from telegram import Update
 from telegram.ext import ApplicationBuilder, ContextTypes, CommandHandler
 
 from api_client import get_last_7_days_data
-from wakatime_data_node import WakatimeDataNode
+from data_node.wakatime_data_node import WakatimeDataNode
 from data_processor import show_pie_chart
 from exception.ChatIdMissingError import ChatIdMissingError
 from exception.WakatimeCredentialsMissingErrro import WakatimeCredentialsMissingError
@@ -150,7 +150,7 @@ async def _send_error(context: ContextTypes.DEFAULT_TYPE, update: Update):
 def _format_to_json_code_block(message: dict[str, Any]) -> str:
     message_json = json.dumps(message, indent=2)
 
-    message_json_block = "```json\n" + message_json + "\n```"
+    message_json_block = f"```json\n{message_json}\n```"
 
     return message_json_block
 
