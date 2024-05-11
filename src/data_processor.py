@@ -26,8 +26,30 @@ def show_pie_chart(
     names: list[str] = [data.name for data in data_list[:5]]
     hours: list[str] = [data.text for data in data_list[:5]]
 
+    colors = None
+
+    # colorize data based on languages names
+    if langs_data is not None:
+        colors = []
+        defaultColors = plt.get_cmap("tab10")
+
+        for index, name in enumerate(names):
+            found = False
+            for lang in langs_data:
+
+                if lang.name.lower() == name.lower():
+                    _ = colors.append(lang.color)
+                    found = True
+                    break
+
+            # use default colors for missing langs
+            if not found:
+                _ = colors.append(defaultColors(index))
+
     # creating pie based on percents, shape it with wedgeprops
-    wedges, autotext = right_plot.pie(percents, wedgeprops=dict(width=0.2, radius=0.95))
+    wedges, autotext = right_plot.pie(
+        percents, colors=colors, wedgeprops=dict(width=0.2, radius=0.95)
+    )
 
     # building left side legend
     labels = [
