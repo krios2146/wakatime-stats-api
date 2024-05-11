@@ -106,6 +106,12 @@ async def languages(update: Update, context: ContextTypes.DEFAULT_TYPE):
         github_languages_data = [
             GithubLanguageDataNode(language) for language in github_languages_response
         ]
+        github_languages_data.append(
+            GithubLanguageDataNode({"name": "Vue.js", "color": "#41b883"})
+        )
+        github_languages_data.append(
+            GithubLanguageDataNode({"name": "Bash", "color": "#89e051"})
+        )
 
         show_pie_chart(wakatime_languages_data, langs_data=github_languages_data)
         languages: str = _format_to_json_code_block(wakatime_languages_response)
