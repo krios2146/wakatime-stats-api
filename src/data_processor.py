@@ -1,5 +1,7 @@
+from uuid import UUID
 import matplotlib
 import matplotlib.pyplot as plt
+import datetime
 
 from data_node.github_language_data_node import GithubLanguageDataNode
 from data_node.wakatime_data_node import WakatimeDataNode
@@ -14,10 +16,13 @@ matplotlib.rcParams.update(custom_font)
 
 GITHUB_BG_COLOR: str = "#0D1117"
 GITHUB_FG_COLOR: str = "#C3D1D9"
+PLOTS_DIRECTORY: str = "plots"
+DATE_SEPARATOR: str = "_"
 
 
-def show_pie_chart(
+def create_pie_chart(
     data_list: list[WakatimeDataNode],
+    uuid: UUID,
     langs_data: list[GithubLanguageDataNode] | None = None,
 ) -> None:
     box, (left_plot, right_plot) = plt.subplots(1, 2)
@@ -71,4 +76,7 @@ def show_pie_chart(
     # setting background for the entire box (figure)
     box.patch.set_facecolor(GITHUB_BG_COLOR)
 
-    plt.show()
+    date = datetime.datetime.now()
+    date = date.strftime("%y-%m-%d")
+
+    plt.savefig(f"{PLOTS_DIRECTORY}/{uuid}{DATE_SEPARATOR}{date}.png")
