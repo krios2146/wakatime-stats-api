@@ -1,10 +1,10 @@
 from uuid import UUID
 import matplotlib
 import matplotlib.pyplot as plt
-import datetime
 
 from data_node.github_language_data_node import GithubLanguageDataNode
 from data_node.wakatime_data_node import WakatimeDataNode
+from image_manager import save_plot
 
 matplotlib.use("TkAgg")
 custom_font = {
@@ -16,8 +16,6 @@ matplotlib.rcParams.update(custom_font)
 
 GITHUB_BG_COLOR: str = "#0D1117"
 GITHUB_FG_COLOR: str = "#C3D1D9"
-PLOTS_DIRECTORY: str = "plots"
-DATE_SEPARATOR: str = "_"
 
 
 def create_pie_chart(
@@ -58,8 +56,8 @@ def create_pie_chart(
     # setting background for the entire box (figure)
     box.patch.set_facecolor(GITHUB_BG_COLOR)
 
-    date = datetime.datetime.now()
-    date = date.strftime("%y-%m-%d")
+    save_plot(box, uuid)
+
 
 def _get_colors(
     github_langs_data: list[GithubLanguageDataNode] | None, languages: list[str]
@@ -82,5 +80,3 @@ def _get_colors(
         # use default colors for missing langs
         if not found:
             _ = colors.append(defaultColors(index))
-
-    return colors
