@@ -31,25 +31,7 @@ def create_pie_chart(
     names: list[str] = [data.name for data in data_list[:5]]
     hours: list[str] = [data.text for data in data_list[:5]]
 
-    colors = None
-
-    # colorize data based on languages names
-    if langs_data is not None:
-        colors = []
-        defaultColors = plt.get_cmap("tab10")
-
-        for index, name in enumerate(names):
-            found = False
-            for lang in langs_data:
-
-                if lang.name.lower() == name.lower():
-                    _ = colors.append(lang.color)
-                    found = True
-                    break
-
-            # use default colors for missing langs
-            if not found:
-                _ = colors.append(defaultColors(index))
+    colors = _get_colors(langs_data, names)
 
     # creating pie based on percents, shape it with wedgeprops
     wedges, autotext = right_plot.pie(
@@ -79,4 +61,26 @@ def create_pie_chart(
     date = datetime.datetime.now()
     date = date.strftime("%y-%m-%d")
 
-    plt.savefig(f"{PLOTS_DIRECTORY}/{uuid}{DATE_SEPARATOR}{date}.png")
+def _get_colors(
+    github_langs_data: list[GithubLanguageDataNode] | None, languages: list[str]
+) -> list | None:
+    if github_langs_data is None:
+        return None
+
+    colors = []
+    defaultColors = plt.get_cmap("tab10")
+
+    for index, language in enumerate(languages):
+        found = False
+        for github_language in github_langs_data:
+
+            if github_language.name.lower() == language.lower():
+                _ = colors.append(github_language.color)
+                found = True
+                break
+
+        # use default colors for missing langs
+        if not found:
+            _ = colors.append(defaultColors(index))
+
+    return colors
