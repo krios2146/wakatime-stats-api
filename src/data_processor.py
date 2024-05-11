@@ -31,8 +31,8 @@ def show_pie_chart(
 
     # building left side legend
     labels = [
-        f"{editor_name} {percent}% - {hour}"
-        for editor_name, percent, hour in zip(names, percents, hours)
+        f"{name} {percent}% - {hour}"
+        for name, percent, hour in zip(names, percents, hours)
     ]
 
     # hiding legend text on the pie
