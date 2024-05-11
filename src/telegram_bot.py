@@ -2,6 +2,7 @@ import json
 import logging
 import os
 from typing import Any
+from uuid import uuid4
 from dotenv import load_dotenv
 from telegram import Update
 from telegram.ext import ApplicationBuilder, ContextTypes, CommandHandler
@@ -9,7 +10,7 @@ from telegram.ext import ApplicationBuilder, ContextTypes, CommandHandler
 from api_client import get_github_languages_info, get_last_7_days_data
 from data_node.github_language_data_node import GithubLanguageDataNode
 from data_node.wakatime_data_node import WakatimeDataNode
-from data_processor import show_pie_chart
+from data_processor import create_pie_chart
 from exception.ChatIdMissingError import ChatIdMissingError
 from exception.WakatimeCredentialsMissingErrro import WakatimeCredentialsMissingError
 
@@ -75,7 +76,7 @@ async def editors(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     try:
         editors = get_last_7_days_data()["editors"]
-        show_pie_chart([WakatimeDataNode(editor) for editor in editors])
+        create_pie_chart([WakatimeDataNode(editor) for editor in editors], uuid4())
         editors = _format_to_json_code_block(editors)
 
         _ = await _send_message(context, update, editors)
@@ -113,7 +114,9 @@ async def languages(update: Update, context: ContextTypes.DEFAULT_TYPE):
             GithubLanguageDataNode({"name": "Bash", "color": "#89e051"})
         )
 
-        show_pie_chart(wakatime_languages_data, langs_data=github_languages_data)
+        create_pie_chart(
+            wakatime_languages_data, uuid4(), langs_data=github_languages_data
+        )
         languages: str = _format_to_json_code_block(wakatime_languages_response)
 
         _ = await _send_message(context, update, languages)
@@ -134,7 +137,7 @@ async def projects(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     try:
         projects = get_last_7_days_data()["projects"]
-        show_pie_chart([WakatimeDataNode(project) for project in projects])
+        create_pie_chart([WakatimeDataNode(project) for project in projects], uuid4())
         projects = _format_to_json_code_block(projects)
 
         _ = await _send_message(context, update, projects)
