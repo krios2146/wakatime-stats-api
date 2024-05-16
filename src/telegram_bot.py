@@ -189,7 +189,7 @@ async def _send_photo(context: ContextTypes.DEFAULT_TYPE, update: Update, uuid: 
             f"Unable to find photo with the following uuid - {uuid}"
         )
 
-    log.debug(f"Responding with a plot - {uuid}")
+    log.info(f"Responding with a plot - {uuid}")
     _ = await context.bot.send_photo(
         chat_id=_get_chat_id(update), photo=open(photo_path, "rb")
     )
