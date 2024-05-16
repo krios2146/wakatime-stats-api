@@ -1,8 +1,7 @@
-import json
 import logging
 import os
 from typing import Any
-from uuid import uuid4
+from uuid import UUID, uuid4
 from dotenv import load_dotenv
 from telegram import Update
 from telegram.ext import ApplicationBuilder, ContextTypes, CommandHandler
@@ -12,7 +11,9 @@ from data_node.github_language_data_node import GithubLanguageDataNode
 from data_node.wakatime_data_node import WakatimeDataNode
 from data_processor import create_pie_chart
 from exception.ChatIdMissingError import ChatIdMissingError
-from exception.WakatimeCredentialsMissingErrro import WakatimeCredentialsMissingError
+from exception.PhotoMissingError import PhotoMissingError
+from exception.WakatimeCredentialsMissingError import WakatimeCredentialsMissingError
+from image_manager import find_by_uuid
 
 logging.basicConfig(
     format="%(asctime)s -- %(levelname)s -- [%(module)s]: %(message)s",
@@ -75,15 +76,21 @@ async def editors(update: Update, context: ContextTypes.DEFAULT_TYPE):
     log.debug("/editors command was requested")
 
     try:
-        editors = get_last_7_days_data()["editors"]
-        create_pie_chart([WakatimeDataNode(editor) for editor in editors], uuid4())
-        editors = _format_to_json_code_block(editors)
+        uuid = uuid4()
+        log.debug(f"Request uuid - {uuid}")
 
-        _ = await _send_message(context, update, editors)
+        editors = get_last_7_days_data()["editors"]
+        create_pie_chart([WakatimeDataNode(editor) for editor in editors], uuid)
+
+        _ = await _send_photo(context, update, uuid)
 
     except ChatIdMissingError as e:
         log.error(str(e))
         return
+
+    except PhotoMissingError as e:
+        log.debug(str(e))
+        _ = await _send_error(context, update)
 
     except WakatimeCredentialsMissingError as e:
         log.debug(
@@ -96,6 +103,9 @@ async def languages(update: Update, context: ContextTypes.DEFAULT_TYPE):
     log.debug("/languages command was requested")
 
     try:
+        uuid = uuid4()
+        log.debug(f"Request uuid - {uuid}")
+
         wakatime_languages_response: list[dict[str, Any]] = get_last_7_days_data()[
             "languages"
         ]
@@ -115,15 +125,18 @@ async def languages(update: Update, context: ContextTypes.DEFAULT_TYPE):
         )
 
         create_pie_chart(
-            wakatime_languages_data, uuid4(), langs_data=github_languages_data
+            wakatime_languages_data, uuid, langs_data=github_languages_data
         )
-        languages: str = _format_to_json_code_block(wakatime_languages_response)
 
-        _ = await _send_message(context, update, languages)
+        _ = await _send_photo(context, update, uuid)
 
     except ChatIdMissingError as e:
         log.error(str(e))
         return
+
+    except PhotoMissingError as e:
+        log.debug(str(e))
+        _ = await _send_error(context, update)
 
     except WakatimeCredentialsMissingError as e:
         log.debug(
@@ -136,15 +149,21 @@ async def projects(update: Update, context: ContextTypes.DEFAULT_TYPE):
     log.debug("/projects command was requested")
 
     try:
-        projects = get_last_7_days_data()["projects"]
-        create_pie_chart([WakatimeDataNode(project) for project in projects], uuid4())
-        projects = _format_to_json_code_block(projects)
+        uuid = uuid4()
+        log.debug(f"Request uuid - {uuid}")
 
-        _ = await _send_message(context, update, projects)
+        projects = get_last_7_days_data()["projects"]
+        create_pie_chart([WakatimeDataNode(project) for project in projects], uuid)
+
+        _ = await _send_photo(context, update, uuid)
 
     except ChatIdMissingError as e:
         log.error(str(e))
         return
+
+    except PhotoMissingError as e:
+        log.debug(str(e))
+        _ = await _send_error(context, update)
 
     except WakatimeCredentialsMissingError as e:
         log.debug(
@@ -156,8 +175,23 @@ async def projects(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def _send_message(
     context: ContextTypes.DEFAULT_TYPE, update: Update, message: str
 ):
+
     _ = await context.bot.send_message(
         chat_id=_get_chat_id(update), text=message, parse_mode="MarkdownV2"
+    )
+
+
+async def _send_photo(context: ContextTypes.DEFAULT_TYPE, update: Update, uuid: UUID):
+    photo_path = find_by_uuid(uuid)
+
+    if photo_path is None:
+        raise PhotoMissingError(
+            f"Unable to find photo with the following uuid - {uuid}"
+        )
+
+    log.debug(f"Responding with a plot - {uuid}")
+    _ = await context.bot.send_photo(
+        chat_id=_get_chat_id(update), photo=open(photo_path, "rb")
     )
 
 
@@ -166,14 +200,6 @@ async def _send_error(context: ContextTypes.DEFAULT_TYPE, update: Update):
         "There is an error occured while processing request, try again later"
     )
     _ = await _send_message(context, update, error_message)
-
-
-def _format_to_json_code_block(message: Any) -> str:
-    message_json = json.dumps(message, indent=2)
-
-    message_json_block = f"```json\n{message_json}\n```"
-
-    return message_json_block
 
 
 def _get_chat_id(update: Update) -> int:
