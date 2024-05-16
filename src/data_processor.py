@@ -1,3 +1,4 @@
+import logging
 from uuid import UUID
 import matplotlib
 import matplotlib.pyplot as plt
@@ -17,12 +18,16 @@ matplotlib.rcParams.update(custom_font)
 GITHUB_BG_COLOR: str = "#0D1117"
 GITHUB_FG_COLOR: str = "#C3D1D9"
 
+log = logging.getLogger(__name__)
+log.setLevel(logging.DEBUG)
+
 
 def create_pie_chart(
     data_list: list[WakatimeDataNode],
     uuid: UUID,
     langs_data: list[GithubLanguageDataNode] | None = None,
 ) -> None:
+    log.info(f"Creating pie chart for uuid - {uuid}")
     box, (left_plot, right_plot) = plt.subplots(1, 2)
 
     percents: list[float] = [data.percent for data in data_list[:5]]
@@ -80,3 +85,5 @@ def _get_colors(
         # use default colors for missing langs
         if not found:
             _ = colors.append(defaultColors(index))
+
+    return colors
