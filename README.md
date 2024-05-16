@@ -86,8 +86,8 @@ WAKATIME_USER='krios2146'
 TELEGRAM_API_TOKEN=''
 ```
 
-[How to get WAKATIME_API_KEY](https://wakatime.com/faq#api-key) 
-[How to get TELEGRAM_API_TOKEN](https://core.telegram.org/bots/tutorial#obtain-your-bot-token) 
+- [How to get WAKATIME_API_KEY](https://wakatime.com/faq#api-key)
+- [How to get TELEGRAM_API_TOKEN](https://core.telegram.org/bots/tutorial#obtain-your-bot-token) 
 
 4. Create `plots` directory
 
