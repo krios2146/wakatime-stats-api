@@ -19,7 +19,9 @@ All charts are saved under the plots directory (should be created manually)
 
 ## Modules
 
-##### `api_client.py`
+Short descirption of each module
+
+### `api_client.py`
 
 Used for API calls
 
@@ -28,7 +30,9 @@ Will be called every time any bot command is called
 
 If /languages bot command is called then `https://raw.githubusercontent.com/github-linguist/linguist/master/lib/linguist/languages.yml` will be fetched
 
-##### `telegram_bot.py`
+---
+
+### `telegram_bot.py`
 
 Uses `api_client` to get data, pass it to the `data_processor` and show the chart obtained by `image_manager`
 
@@ -40,14 +44,18 @@ Have 4 commands:
 
 For the /languages command [github-linguist](https://github.com/github-linguist/linguist) `languages.yml` file is fetched via `api_client`
 
-##### `data_processor.py`
+---
+
+### `data_processor.py`
 
 Uses [matplotlib](https://matplotlib.org/stable/) to build charts for every bot command.
 Charts are saved under `plots` directory. 
 Chart names follow the pattern - `${UUID}_${date}.png`, 
 where `UUID` is the UUID of a request, and `date` is a date in the YY-MM-DD format
 
-##### `image_manager.py`
+---
+
+### `image_manager.py`
 
 Used by `data_processor` to save charts to the charts and by `telegram_bot` to retrieve the chart by its UUID
 
