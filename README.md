@@ -75,14 +75,14 @@ cd wakatime-stats-aggregator
 3. Create `.env` file
 
 ```bash
-touck .env
+touch .env
 ```
 
 The content of the `.env` is the following
 ```env
 WAKATIME_API_KEY=''
 WAKATIME_BASE_URL='https://wakatime.com/api/v1'
-WAKATIME_USER='krios2146'
+WAKATIME_USER=''
 TELEGRAM_API_TOKEN=''
 ```
 
