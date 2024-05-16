@@ -4,6 +4,8 @@ Telegram bot for fetching personal stats from the Wakatime using their API and c
 
 ## Showcase
 
+![image](https://github.com/krios2146/wakatime-stats-aggregator/assets/91407999/de7c92cc-9a92-40f2-900d-22ce7ed8c013)
+
 ## Features
 
 Pie chart generation for the projects, languages and editors data obtained form the Wakatime API
