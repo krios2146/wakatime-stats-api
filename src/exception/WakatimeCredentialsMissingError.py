@@ -1,0 +1,2 @@
+class WakatimeCredentialsMissingError(Exception):
+    pass
