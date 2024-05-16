@@ -1,4 +1,5 @@
-wakatime_venv
+venv
+plots
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
