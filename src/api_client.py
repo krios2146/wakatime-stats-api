@@ -6,7 +6,7 @@ import os
 from dotenv import load_dotenv
 from ruamel.yaml import YAML
 
-from exception.WakatimeCredentialsMissingErrro import WakatimeCredentialsMissingError
+from exception.WakatimeCredentialsMissingError import WakatimeCredentialsMissingError
 
 log = logging.getLogger(__name__)
 log.setLevel(logging.DEBUG)
@@ -34,6 +34,8 @@ def get_last_7_days_data() -> dict[str, dict[str, Any] | list[dict[str, Any]]]:
 
     headers = {"Authorization": f"Basic {api_key_encoded.decode()}"}
 
+    log.info("Requesting last 7 days data from Wakatime")
+
     response = requests.get(
         f"{base_url}/users/krios2146/stats/last_7_days", headers=headers
     )
@@ -45,6 +47,8 @@ def get_last_7_days_data() -> dict[str, dict[str, Any] | list[dict[str, Any]]]:
 
 def get_github_languages_info() -> list[dict[str, Any]]:
     url = "https://raw.githubusercontent.com/github-linguist/linguist/master/lib/linguist/languages.yml"
+
+    log.info("Requesting languages.yml from the github-linguist")
 
     response = requests.get(url)
 
@@ -63,5 +67,4 @@ def get_github_languages_info() -> list[dict[str, Any]]:
 
 
 if __name__ == "__main__":
-    # _ = get_last_7_days_data()
-    _ = get_github_languages_info()
+    log.info("This should not be run as a module")
