@@ -1,5 +1,6 @@
 from functools import reduce
 import logging
+
 from . import chart_builder
 from . import chart_manager
 from .client import github_api_client
@@ -70,10 +71,18 @@ def _merge_github_lang_colors(
 
     merged_colors = github_colors.copy()
 
-    for github_color in github_colors:
-        for param_color in param_colors:
-            if github_color.lower() == param_color.lower():
-                merged_colors[github_color] = param_colors[param_color]
+    for github_color_name in github_colors:
+        for color_name in param_colors:
+            color = param_colors[color_name]
+
+            if not color.startswith("#"):
+                color = "#" + color
+
+            if github_color_name.lower() == color_name.lower():
+                merged_colors[github_color_name] = color
+                continue
+
+            merged_colors[color_name] = color
 
     return merged_colors
 
