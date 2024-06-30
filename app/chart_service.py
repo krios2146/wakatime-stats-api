@@ -1,5 +1,6 @@
 from functools import reduce
 import logging
+import re
 
 from . import chart_builder
 from . import chart_manager
@@ -75,7 +76,7 @@ def _merge_github_lang_colors(
         for color_name in param_colors:
             color = param_colors[color_name]
 
-            if not color.startswith("#"):
+            if _is_hex_without_hash(color):
                 color = "#" + color
 
             if github_color_name.lower() == color_name.lower():
@@ -208,3 +209,8 @@ def _combine_items(
         hours=combined_hours,
         minutes=combined_minutes,
     )
+
+
+def _is_hex_without_hash(color: str) -> bool:
+    hex_code_pattern = re.compile(r"^([a-fA-F0-9]{6}|[a-fA-F0-9]{3})$")
+    return bool(re.match(hex_code_pattern, color))
