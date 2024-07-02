@@ -6,7 +6,6 @@ import matplotlib.pyplot as plt
 from . import chart_manager
 from .model.wakatime.wakatime_item_dto import WakatimeItemDto
 
-matplotlib.use("TkAgg")
 custom_font = {
     "font.family": "sans-serif",
     "font.serif": ["Segoe UI"],
