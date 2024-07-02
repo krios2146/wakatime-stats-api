@@ -21,14 +21,19 @@ log.setLevel(logging.DEBUG)
 
 
 def create_pie_chart(
-    data_list: list[WakatimeItemDto], uuid: UUID, colors_data: dict[str, str] | None
+    data_list: list[WakatimeItemDto],
+    uuid: UUID,
+    colors_data: dict[str, str] | None,
+    height: int | None,
+    width: int | None,
 ) -> None:
     log.info(f"Creating pie chart {uuid}")
     box, (left_plot, right_plot) = plt.subplots(1, 2)  # type: ignore[all]
 
     percents: list[float] = [data.percent for data in data_list[:5]]
     names: list[str] = [data.name for data in data_list[:5]]
-    hours: list[str] = [data.text for data in data_list[:5]]
+    hours: list[int] = [data.hours for data in data_list[:5]]
+    minutes: list[int] = [data.minutes for data in data_list[:5]]
 
     colors = _map_colors(colors_data, data_list)
 
@@ -36,15 +41,15 @@ def create_pie_chart(
     wedges, autotext = right_plot.pie(
         percents,
         colors=colors,
-        wedgeprops=dict(width=0.2, radius=0.95),
+        wedgeprops=dict(width=0.22, radius=1.2),
         startangle=90,
         counterclock=False,
     )
 
-    # building left side legend
+    # building left side legend {percent}%
     labels = [
-        f"{name} {percent}% - {hour}"
-        for name, percent, hour in zip(names, percents, hours)
+        f"{name} - {hour}h {minunte}m"
+        for name, hour, minunte in zip(names, hours, minutes)
     ]
 
     # hiding legend text on the pie
@@ -60,6 +65,11 @@ def create_pie_chart(
 
     # setting background for the entire box (figure)
     box.patch.set_facecolor(GITHUB_BG_COLOR)
+
+    if height is not None and width is not None:
+        box.set_size_inches(w=width / 100, h=height / 100)
+
+    box.subplots_adjust(right=0.95, left=0.1)
 
     chart_manager.save_chart(box, uuid)
 
