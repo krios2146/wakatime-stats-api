@@ -20,7 +20,7 @@ def save_chart(figure: Figure, uuid: UUID):
     if not os.path.exists(PLOTS_DIRECTORY):
         os.makedirs(PLOTS_DIRECTORY)
 
-    figure.savefig(f"{PLOTS_DIRECTORY}/{uuid}{DATE_SEPARATOR}{date}.png")  # type: ignore[all]
+    figure.savefig(f"{PLOTS_DIRECTORY}/{uuid}{DATE_SEPARATOR}{date}.svg")  # type: ignore[all]
 
 
 def find_by_uuid(uuid: UUID) -> str | None:
