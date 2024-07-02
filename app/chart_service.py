@@ -41,6 +41,7 @@ def create_chart(chart_request: ChartRequest) -> Chart | None:
             data = response.data.editors
 
     colors = _merge_group_colors(colors, chart_request.group_colors)
+    colors = _normalize_colors(colors)
 
     assert data is not None
 
@@ -82,9 +83,6 @@ def _merge_github_lang_colors(
         for color_name in param_colors:
             color = param_colors[color_name]
 
-            if _is_hex_without_hash(color):
-                color = "#" + color
-
             if github_color_name.lower() == color_name.lower():
                 merged_colors[github_color_name] = color
                 continue
@@ -104,6 +102,20 @@ def _merge_group_colors(
         return colors
 
     return colors | group_colors
+
+
+def _normalize_colors(colors: dict[str, str] | None) -> dict[str, str] | None:
+    if colors is None:
+        return None
+
+    for color_key in colors:
+        color = colors[color_key]
+
+        if _is_hex_without_hash(color):
+            color = "#" + color
+            colors[color_key] = color
+
+    return colors
 
 
 def _hide(data: list[WakatimeItemDto], hide: set[str] | None) -> list[WakatimeItemDto]:
