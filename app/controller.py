@@ -17,9 +17,18 @@ app = FastAPI()
 
 
 @app.get("/api/{username}/pie/languages")
-def languages(username: str, request: Request, hide: str | None = None) -> FileResponse:
+def languages(
+    username: str,
+    request: Request,
+    hide: str | None = None,
+    width: int | None = None,
+    height: int | None = None,
+) -> FileResponse:
     languages_to_hide: set[str] | None = _parse_hide(hide)
     language_colors: dict[str, str] | None = _parse_colors(request.query_params)
+
+    log.info(f"width = {width}")
+    log.info(f"height = {height}")
 
     chart_request: ChartRequest = ChartRequest(
         ChartType.PIE,
@@ -27,6 +36,8 @@ def languages(username: str, request: Request, hide: str | None = None) -> FileR
         username,
         hide=languages_to_hide,
         colors=language_colors,
+        width=width,
+        height=height,
     )
 
     chart: Chart | None = chart_service.create_chart(chart_request)
@@ -45,6 +56,8 @@ def projects(
     request: Request,
     hide: Annotated[list[str] | None, Query()] = None,
     group: Annotated[list[str] | None, Query()] = None,
+    width: int | None = None,
+    height: int | None = None,
 ):
     elements_to_hide: set[str] | None = _parse_hide_list(hide)
     project_colors: dict[str, str] | None = None
@@ -69,6 +82,8 @@ def projects(
         colors=project_colors,
         groups=groups,
         group_colors=group_colors,
+        width=width,
+        height=height,
     )
 
     chart: Chart | None = chart_service.create_chart(chart_request)
@@ -82,7 +97,13 @@ def projects(
 
 
 @app.get("/api/{username}/pie/editors")
-def editors(username: str, request: Request, hide: str | None = None):
+def editors(
+    username: str,
+    request: Request,
+    hide: str | None = None,
+    width: int | None = None,
+    height: int | None = None,
+):
     editors_to_hide: set[str] | None = _parse_hide(hide)
     editor_colors: dict[str, str] | None = _parse_colors(request.query_params)
 
@@ -92,6 +113,8 @@ def editors(username: str, request: Request, hide: str | None = None):
         username,
         hide=editors_to_hide,
         colors=editor_colors,
+        width=width,
+        height=height,
     )
 
     chart: Chart | None = chart_service.create_chart(chart_request)
