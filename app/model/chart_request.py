@@ -13,6 +13,8 @@ class ChartRequest:
     colors: dict[str, str] | None
     groups: dict[str, set[str]] | None
     group_colors: dict[str, str] | None
+    width: int | None = None
+    height: int | None = None
 
     def __init__(
         self,
@@ -23,6 +25,8 @@ class ChartRequest:
         colors: dict[str, str] | None = None,
         groups: dict[str, set[str]] | None = None,
         group_colors: dict[str, str] | None = None,
+        width: int | None = None,
+        height: int | None = None,
     ) -> None:
         self.uuid = uuid4()
         self.chart_type = chart_type
@@ -32,3 +36,5 @@ class ChartRequest:
         self.colors = colors
         self.groups = groups
         self.group_colors = group_colors
+        self.width = width
+        self.height = height
