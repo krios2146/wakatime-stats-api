@@ -17,6 +17,9 @@ def save_chart(figure: Figure, uuid: UUID):
     date = datetime.datetime.now()
     date = date.strftime("%y-%m-%d")
 
+    if not os.path.exists(PLOTS_DIRECTORY):
+        os.makedirs(PLOTS_DIRECTORY)
+
     figure.savefig(f"{PLOTS_DIRECTORY}/{uuid}{DATE_SEPARATOR}{date}.png")  # type: ignore[all]
 
 
