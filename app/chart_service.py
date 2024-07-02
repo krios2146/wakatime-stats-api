@@ -49,7 +49,13 @@ def create_chart(chart_request: ChartRequest) -> Chart | None:
 
     match chart_request.chart_type:
         case ChartType.PIE:
-            chart_builder.create_pie_chart(data, chart_request.uuid, colors)
+            chart_builder.create_pie_chart(
+                data,
+                chart_request.uuid,
+                colors,
+                height=chart_request.height,
+                width=chart_request.width,
+            )
 
     chart_path: str | None = chart_manager.find_by_uuid(chart_request.uuid)
 
