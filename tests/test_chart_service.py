@@ -1,7 +1,7 @@
 from unittest import TestCase
 
 from app import chart_service
-from app.model.wakatime.wakatime_item_dto import WakatimeItemDto
+from app.model.wakatime.wakatime_item import WakatimeItem
 
 
 class ChartServiceTest(TestCase):
@@ -9,12 +9,12 @@ class ChartServiceTest(TestCase):
     chart_service = chart_service
 
     def test_should_group_projects(self):
-        test_data: list[WakatimeItemDto] = _get_test_data()
+        test_data: list[WakatimeItem] = _get_test_data()
         test_group: dict[str, set[str]] | None = {
             "Other": {"HTTP Request", "YAML", "Markdown", "SQL"},
         }
-        expected: list[WakatimeItemDto] = [
-            WakatimeItemDto(
+        expected: list[WakatimeItem] = [
+            WakatimeItem(
                 total_seconds=38576.259,
                 name="Java",
                 percent=39.35,
@@ -24,7 +24,7 @@ class ChartServiceTest(TestCase):
                 minutes=42,
                 hours=10,
             ),
-            WakatimeItemDto(
+            WakatimeItem(
                 total_seconds=17150,
                 name="Python",
                 percent=17.5,
@@ -34,7 +34,7 @@ class ChartServiceTest(TestCase):
                 minutes=45,
                 hours=4,
             ),
-            WakatimeItemDto(
+            WakatimeItem(
                 total_seconds=16847.673,
                 name="Other",
                 percent=17.24,
@@ -44,7 +44,7 @@ class ChartServiceTest(TestCase):
                 minutes=39,
                 hours=4,
             ),
-            WakatimeItemDto(
+            WakatimeItem(
                 total_seconds=10638.081,
                 name="Vue.js",
                 percent=10.85,
@@ -54,7 +54,7 @@ class ChartServiceTest(TestCase):
                 minutes=57,
                 hours=2,
             ),
-            WakatimeItemDto(
+            WakatimeItem(
                 total_seconds=2348,
                 name="Lua",
                 percent=2.4,
@@ -66,7 +66,7 @@ class ChartServiceTest(TestCase):
             ),
         ]
 
-        actual: list[WakatimeItemDto] = chart_service._group(test_data, test_group)  # type: ignore[all]
+        actual: list[WakatimeItem] = chart_service._group(test_data, test_group)  # type: ignore[all]
 
         self.assertEqual(actual, expected)
 
@@ -79,9 +79,9 @@ class ChartServiceTest(TestCase):
         self.assertEqual(expected, actual)
 
 
-def _get_test_data() -> list[WakatimeItemDto]:
-    test_data: list[WakatimeItemDto] = [
-        WakatimeItemDto(
+def _get_test_data() -> list[WakatimeItem]:
+    test_data: list[WakatimeItem] = [
+        WakatimeItem(
             total_seconds=38576.259,
             name="Java",
             percent=39.35,
@@ -91,7 +91,7 @@ def _get_test_data() -> list[WakatimeItemDto]:
             minutes=42,
             hours=10,
         ),
-        WakatimeItemDto(
+        WakatimeItem(
             total_seconds=17150,
             name="Python",
             percent=17.5,
@@ -101,7 +101,7 @@ def _get_test_data() -> list[WakatimeItemDto]:
             minutes=45,
             hours=4,
         ),
-        WakatimeItemDto(
+        WakatimeItem(
             total_seconds=10638.081,
             name="Vue.js",
             percent=10.85,
@@ -111,7 +111,7 @@ def _get_test_data() -> list[WakatimeItemDto]:
             minutes=57,
             hours=2,
         ),
-        WakatimeItemDto(
+        WakatimeItem(
             total_seconds=5746.943,
             name="HTTP Request",
             percent=5.86,
@@ -121,7 +121,7 @@ def _get_test_data() -> list[WakatimeItemDto]:
             minutes=35,
             hours=1,
         ),
-        WakatimeItemDto(
+        WakatimeItem(
             total_seconds=4533.516,
             name="YAML",
             percent=4.68,
@@ -131,7 +131,7 @@ def _get_test_data() -> list[WakatimeItemDto]:
             minutes=15,
             hours=1,
         ),
-        WakatimeItemDto(
+        WakatimeItem(
             total_seconds=4326.793,
             name="Markdown",
             percent=4.41,
@@ -141,7 +141,7 @@ def _get_test_data() -> list[WakatimeItemDto]:
             minutes=12,
             hours=1,
         ),
-        WakatimeItemDto(
+        WakatimeItem(
             total_seconds=2348,
             name="Lua",
             percent=2.4,
@@ -151,7 +151,7 @@ def _get_test_data() -> list[WakatimeItemDto]:
             minutes=39,
             hours=0,
         ),
-        WakatimeItemDto(
+        WakatimeItem(
             total_seconds=2240.421,
             name="SQL",
             percent=2.29,

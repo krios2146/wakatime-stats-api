@@ -5,14 +5,14 @@ import requests
 from dotenv import load_dotenv
 from ruamel.yaml import YAML
 
-from ..model.github_language_item_dto import GithubLanguageItemDto
+from ..model.github_language_item import GithubLanguageItem
 
 log = logging.getLogger(__name__)
 
 _ = load_dotenv()
 
 
-def get_github_languages() -> list[GithubLanguageItemDto]:
+def get_github_languages() -> list[GithubLanguageItem]:
     url = "https://raw.githubusercontent.com/github-linguist/linguist/master/lib/linguist/languages.yml"
 
     log.info("Requesting languages.yml from the github-linguist")
@@ -24,10 +24,10 @@ def get_github_languages() -> list[GithubLanguageItemDto]:
     yaml = YAML()
     languages_yaml: dict[str, Any] = yaml.load(response.text)
 
-    languages: list[GithubLanguageItemDto] = []
+    languages: list[GithubLanguageItem] = []
 
     for key in languages_yaml.keys():
         language = {"name": key, **languages_yaml.get(key)}  # type: ignore[all]
-        languages.append(GithubLanguageItemDto(language))
+        languages.append(GithubLanguageItem(language))
 
     return languages

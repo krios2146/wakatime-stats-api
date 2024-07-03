@@ -5,13 +5,13 @@ import re
 from . import chart_builder
 from . import chart_manager
 from .client import github_api_client
-from .model.chart_data import ChartData
-from .model.chart_request import ChartRequest
-from .model.chart import Chart
+from .model.chart.chart_data_type import ChartDataType
+from .model.chart.chart_request import ChartRequest
+from .model.chart.chart import Chart
 from .client import wakatime_api_client
-from .model.chart_type import ChartType
-from .model.github_language_item_dto import GithubLanguageItemDto
-from .model.wakatime.wakatime_item_dto import WakatimeItemDto
+from .model.chart.chart_type import ChartType
+from .model.github_language_item import GithubLanguageItem
+from .model.wakatime.wakatime_item import WakatimeItem
 from .model.wakatime.wakatime_response import WakatimeResponse
 
 log = logging.getLogger(__name__)
@@ -25,19 +25,19 @@ def create_chart(chart_request: ChartRequest) -> Chart | None:
         chart_request.username
     )
 
-    data: list[WakatimeItemDto] | None = None
+    data: list[WakatimeItem] | None = None
     colors: dict[str, str] | None = chart_request.colors
 
     match chart_request.chart_data:
-        case ChartData.LANGUAGES:
+        case ChartDataType.LANGUAGES:
             data = response.data.languages
             github_languages = github_api_client.get_github_languages()
             colors = _merge_github_lang_colors(colors, github_languages)
 
-        case ChartData.PROJECTS:
+        case ChartDataType.PROJECTS:
             data = response.data.projects
 
-        case ChartData.EDITORS:
+        case ChartDataType.EDITORS:
             data = response.data.editors
 
     colors = _merge_group_colors(colors, chart_request.group_colors)
@@ -67,7 +67,7 @@ def create_chart(chart_request: ChartRequest) -> Chart | None:
 
 
 def _merge_github_lang_colors(
-    param_colors: dict[str, str] | None, github_languages: list[GithubLanguageItemDto]
+    param_colors: dict[str, str] | None, github_languages: list[GithubLanguageItem]
 ) -> dict[str, str] | None:
     github_colors: dict[str, str] = {
         github_language.name: github_language.color
@@ -118,7 +118,7 @@ def _normalize_colors(colors: dict[str, str] | None) -> dict[str, str] | None:
     return colors
 
 
-def _hide(data: list[WakatimeItemDto], hide: set[str] | None) -> list[WakatimeItemDto]:
+def _hide(data: list[WakatimeItem], hide: set[str] | None) -> list[WakatimeItem]:
     if hide is None:
         return data
 
@@ -126,12 +126,12 @@ def _hide(data: list[WakatimeItemDto], hide: set[str] | None) -> list[WakatimeIt
 
 
 def _group(
-    data: list[WakatimeItemDto], groups: dict[str, set[str]] | None
-) -> list[WakatimeItemDto]:
+    data: list[WakatimeItem], groups: dict[str, set[str]] | None
+) -> list[WakatimeItem]:
     if groups is None:
         return data
 
-    grouped_items: list[WakatimeItemDto] = list()
+    grouped_items: list[WakatimeItem] = list()
 
     for group_name, group_item_names in groups.items():
         non_grouped_items = _filter(data, group_item_names)
@@ -154,23 +154,21 @@ def _group(
     return grouped_data
 
 
-def _filter(
-    items: list[WakatimeItemDto], item_names: set[str]
-) -> list[WakatimeItemDto]:
+def _filter(items: list[WakatimeItem], item_names: set[str]) -> list[WakatimeItem]:
     filtered_wildcards = _filter_wildcard_items(items, item_names)
     return _filter_items(filtered_wildcards, item_names)
 
 
 def _filter_items(
-    items: list[WakatimeItemDto], item_names: set[str]
-) -> list[WakatimeItemDto]:
+    items: list[WakatimeItem], item_names: set[str]
+) -> list[WakatimeItem]:
     return list(filter(lambda x: x.name.lower() not in item_names, items))
 
 
 def _filter_wildcard_items(
-    items: list[WakatimeItemDto], item_names: set[str]
-) -> list[WakatimeItemDto]:
-    filtered_items: list[WakatimeItemDto] = list()
+    items: list[WakatimeItem], item_names: set[str]
+) -> list[WakatimeItem]:
+    filtered_items: list[WakatimeItem] = list()
 
     suffixes = list(
         map(lambda x: x[2:], filter(lambda x: x.startswith("**"), item_names))
@@ -198,9 +196,7 @@ def _filter_wildcard_items(
     return filtered_items
 
 
-def _combine_items(
-    item_one: WakatimeItemDto, item_two: WakatimeItemDto
-) -> WakatimeItemDto:
+def _combine_items(item_one: WakatimeItem, item_two: WakatimeItem) -> WakatimeItem:
     combined_total_seconds: float = item_one.total_seconds + item_two.total_seconds
     combined_percent: float = item_one.percent + item_two.percent
     combined_hours: int = item_one.hours + item_two.hours
@@ -217,7 +213,7 @@ def _combine_items(
     combined_decimal = f"{combined_hours}.{combined_minutes // 0.6}"
     combined_text = f"{f"{combined_hours} hrs" if combined_hours != 0 else ""} {combined_minutes} mins"
 
-    return WakatimeItemDto(
+    return WakatimeItem(
         total_seconds=combined_total_seconds,
         name=item_one.name,
         percent=combined_percent,

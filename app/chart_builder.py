@@ -4,7 +4,7 @@ import matplotlib
 import matplotlib.pyplot as plt
 
 from . import chart_manager
-from .model.wakatime.wakatime_item_dto import WakatimeItemDto
+from .model.wakatime.wakatime_item import WakatimeItem
 
 custom_font = {
     "font.family": "sans-serif",
@@ -21,7 +21,7 @@ log.setLevel(logging.DEBUG)
 
 
 def create_pie_chart(
-    data_list: list[WakatimeItemDto],
+    data_list: list[WakatimeItem],
     uuid: UUID,
     colors_data: dict[str, str] | None,
     height: int | None,
@@ -75,7 +75,7 @@ def create_pie_chart(
 
 
 def _map_colors(
-    item_colors: dict[str, str] | None, items: list[WakatimeItemDto]
+    item_colors: dict[str, str] | None, items: list[WakatimeItem]
 ) -> list[str | tuple[float, float, float, float]] | None:
     if item_colors is None:
         return None
