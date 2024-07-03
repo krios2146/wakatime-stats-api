@@ -95,6 +95,22 @@ def create_pie_chart(
 def _map_colors(
     item_colors: dict[str, str] | None, items: list[WakatimeItem]
 ) -> list[str | tuple[float, float, float, float]] | None:
+    """
+    Maps colors to items based on item_colors dictionary.
+
+    Parameters:
+    item_colors (dict[str, str] | None): A dictionary mapping item names to colors. If None, returns None.
+    items (list[WakatimeItem]): A list of WakatimeItem objects to map colors to.
+
+    Returns:
+    list[str | tuple[float, float, float, float]] | None: A list of colors corresponding to items.
+                                                         Returns None if item_colors is None.
+
+    Notes:
+    - This function maps colors to items based on the item_colors dictionary.
+    - If item_colors is None, returns None indicating no color mapping.
+    - Uses default colors from plt.get_cmap("tab10") for items without specified colors.
+    """
     if item_colors is None:
         return None
 
