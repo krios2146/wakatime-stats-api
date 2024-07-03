@@ -1,13 +1,13 @@
 from uuid import UUID, uuid4
 
 from .chart_type import ChartType
-from .chart_data import ChartData
+from .chart_data_type import ChartDataType
 
 
 class ChartRequest:
     uuid: UUID
     chart_type: ChartType
-    chart_data: ChartData
+    chart_data: ChartDataType
     username: str
     hide: set[str] | None
     colors: dict[str, str] | None
@@ -19,7 +19,7 @@ class ChartRequest:
     def __init__(
         self,
         chart_type: ChartType,
-        chart_data: ChartData,
+        chart_data: ChartDataType,
         username: str,
         hide: set[str] | None = None,
         colors: dict[str, str] | None = None,
