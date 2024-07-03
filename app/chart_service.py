@@ -112,6 +112,21 @@ def _merge_github_lang_colors(
 def _merge_group_colors(
     colors: dict[str, str] | None, group_colors: dict[str, str] | None
 ) -> dict[str, str] | None:
+    """
+    Merges two dictionaries of colors, prioritizing the first dictionary.
+
+    Parameters:
+    colors (dict[str, str] | None): A dictionary mapping item names to colors. If None, returns `group_colors`.
+    group_colors (dict[str, str] | None): A dictionary mapping group names to colors. If None, returns `colors`.
+
+    Returns:
+    dict[str, str] | None: A merged dictionary containing colors from both `colors` and `group_colors`.
+                           Returns None if both `colors` and `group_colors` are None.
+
+    Notes:
+    - This function merges two dictionaries of colors, giving priority to `colors` if both dictionaries contain the same keys.
+    - If either `colors` or `group_colors` is None, returns the non-None dictionary as-is.
+    """
     if colors is None:
         return group_colors
 
