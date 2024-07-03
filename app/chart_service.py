@@ -262,5 +262,18 @@ def _combine_items(item_one: WakatimeItem, item_two: WakatimeItem) -> WakatimeIt
 
 
 def _is_hex_without_hash(color: str) -> bool:
+    """
+    Checks if a given string is a valid hexadecimal color code without a leading '#'.
+
+    Parameters:
+    color (str): The string to check.
+
+    Returns:
+    bool: True if the string is a valid hexadecimal color code without '#', False otherwise.
+
+    Notes:
+    - Valid hexadecimal color codes consist of 3 or 6 characters from the set [0-9a-fA-F].
+    - This function does not validate other color formats like named colors or RGB/RGBA values.
+    """
     hex_code_pattern = re.compile(r"^([a-fA-F0-9]{6}|[a-fA-F0-9]{3})$")
     return bool(re.match(hex_code_pattern, color))
