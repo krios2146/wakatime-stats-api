@@ -20,7 +20,6 @@ and uses [GitHub language colors](https://github.com/github-linguist/linguist/bl
 - [API Reference](#api-reference)
 - [Local run](#local-run)
 - [Deployment](#deployment)
-- [License](#license)
 
 ## Showcase
 
@@ -254,7 +253,3 @@ Remember about .env file
  ```bash
  docker run -d -p 80:8000 --env-file .env {docker_username}/wakatime-stats-api
  ```
-
-## License
-
-[MIT](https://choosealicense.com/licenses/mit/)
