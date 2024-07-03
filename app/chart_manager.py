@@ -38,6 +38,19 @@ def save_chart(figure: Figure, uuid: UUID):
 
 
 def find_by_uuid(uuid: UUID) -> str | None:
+    """
+    Searches for a plot file in the PLOTS_DIRECTORY with the specified UUID.
+
+    Parameters:
+    uuid (UUID): A unique identifier for the chart.
+
+    Returns:
+    str | None: The path to the plot file if found, otherwise None.
+
+    Notes:
+    - This function searches for a plot file in the PLOTS_DIRECTORY with a filename containing the given UUID.
+    - Returns the full path to the plot file if found, otherwise returns None.
+    """
     log.debug(f"Searching plot {uuid}")
 
     for plot in os.listdir(PLOTS_DIRECTORY):
