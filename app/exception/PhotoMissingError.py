@@ -1,2 +1,0 @@
-class PhotoMissingError(Exception):
-    pass

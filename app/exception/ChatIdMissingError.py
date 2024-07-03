@@ -1,2 +1,0 @@
-class ChatIdMissingError(Exception):
-    pass
