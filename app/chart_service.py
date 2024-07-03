@@ -204,6 +204,22 @@ def _filter_items(
 def _filter_wildcard_items(
     items: list[WakatimeItem], item_names: set[str]
 ) -> list[WakatimeItem]:
+    """
+    Filters a list of WakatimeItem objects based on wildcard patterns in item_names.
+
+    Parameters:
+    items (list[WakatimeItem]): A list of WakatimeItem objects to filter.
+    item_names (set[str]): A set of item names containing wildcard patterns ('**' suffixes and prefixes).
+
+    Returns:
+    list[WakatimeItem]: A filtered list of WakatimeItem objects that do not match any wildcard patterns.
+
+    Notes:
+    - Wildcard patterns in item_names are interpreted as follows:
+      - "**-C" matches any item name ending with "-C".
+      - "Project-**" matches any item name starting with "Project-".
+    - Matching is case-insensitive; item names are converted to lowercase for comparison.
+    """
     filtered_items: list[WakatimeItem] = list()
 
     suffixes = list(
