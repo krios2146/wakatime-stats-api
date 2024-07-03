@@ -242,6 +242,20 @@ def _parse_project_colors(
 
 
 def _parse_colors(query: QueryParams | None) -> dict[str, str] | None:
+    """
+    Parses query parameters to extract key-value pairs representing colors.
+    Use _parse_project_colors for parsing project_colors specifically.
+
+    Parameters:
+    query (QueryParams | None): An object containing query parameters, or None.
+
+    Returns:
+    dict[str, str] | None: A dictionary mapping keys to their corresponding color values,
+    or None if query is None or does not contain any valid color-related parameters.
+
+    See Also:
+    _parse_project_colors: For parsing group-related query parameters.
+    """
     if query is None:
         return None
 
