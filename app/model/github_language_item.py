@@ -1,4 +1,4 @@
-class GithubLanguageItemDto:
+class GithubLanguageItem:
     name: str
     type: str
     color: str
