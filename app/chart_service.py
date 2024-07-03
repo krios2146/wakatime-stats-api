@@ -19,6 +19,23 @@ log.level = logging.DEBUG
 
 
 def create_chart(chart_request: ChartRequest) -> Chart | None:
+    """
+    Creates a chart based on the provided ChartRequest.
+
+    Parameters:
+    chart_request (ChartRequest): An object containing all necessary parameters to create the chart.
+
+    Returns:
+    Chart | None: A Chart object representing the created chart, or None if the chart could not be created.
+
+    Raises:
+    AssertionError: If data is unexpectedly None after processing.
+
+    Notes:
+    This function fetches data from external APIs (Wakatime and possibly GitHub) based on chart_request.
+    It processes and organizes the data according to the specified parameters in chart_request.
+    The created chart is stored and can be retrieved later using its unique uuid with the help of chart_manager.
+    """
     log.info(f"Creating chart {chart_request.uuid}")
 
     response: WakatimeResponse = wakatime_api_client.get_last_7_days(
