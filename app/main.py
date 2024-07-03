@@ -128,6 +128,15 @@ def editors(
 
 
 def _parse_hide_list(hide_query: list[str] | None) -> set[str] | None:
+    """
+    Parses a list of strings, each containing comma-separated values, into a set of lowercase strings.
+
+    Parameters:
+    hide_query (list[str] | None): A list of comma-separated strings or None.
+
+    Returns:
+    set[str] | None: A set of unique lowercase strings or None if hide_query is None.
+    """
     if hide_query is None:
         return None
 
