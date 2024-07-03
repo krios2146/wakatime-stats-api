@@ -155,6 +155,20 @@ def _normalize_colors(colors: dict[str, str] | None) -> dict[str, str] | None:
 
 
 def _hide(data: list[WakatimeItem], hide: set[str] | None) -> list[WakatimeItem]:
+    """
+    Filters out WakatimeItem objects from the data based on the hide set.
+
+    Parameters:
+    data (list[WakatimeItem]): A list of WakatimeItem objects to filter.
+    hide (set[str] | None): A set of item names to hide from the data. If None, returns the original data list.
+
+    Returns:
+    list[WakatimeItem]: A filtered list of WakatimeItem objects excluding those in the hide set.
+
+    Notes:
+    - This function filters out WakatimeItem objects from the data based on the hide set.
+    - If hide is None, returns the original data list unchanged.
+    """
     if hide is None:
         return data
 
