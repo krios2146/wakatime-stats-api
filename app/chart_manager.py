@@ -12,6 +12,20 @@ log.setLevel(logging.DEBUG)
 
 
 def save_chart(figure: Figure, uuid: UUID):
+    """
+    Saves a matplotlib Figure object as an SVG file with the specified UUID and current date.
+
+    Parameters:
+    figure (Figure): A matplotlib Figure object to save.
+    uuid (UUID): A unique identifier for the chart.
+
+    Returns:
+    None
+
+    Notes:
+    - This function saves the plot as an SVG file in the PLOTS_DIRECTORY with the format "{uuid}_{current_date}.svg".
+    - Creates the PLOTS_DIRECTORY if it doesn't exist.
+    """
     log.debug(f"Saving plot {uuid}")
 
     date = datetime.datetime.now()
