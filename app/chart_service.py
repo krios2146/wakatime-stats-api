@@ -164,6 +164,23 @@ def _hide(data: list[WakatimeItem], hide: set[str] | None) -> list[WakatimeItem]
 def _group(
     data: list[WakatimeItem], groups: dict[str, set[str]] | None
 ) -> list[WakatimeItem]:
+    """
+    Groups WakatimeItem objects based on the provided groups dictionary.
+
+    Parameters:
+    data (list[WakatimeItem]): A list of WakatimeItem objects to be grouped.
+    groups (dict[str, set[str]] | None): A dictionary where keys are group names and values are sets of item names
+                                         belonging to each group. If None, returns the original data list.
+
+    Returns:
+    list[WakatimeItem]: A list of grouped WakatimeItem objects sorted by total seconds in descending order.
+
+    Notes:
+    - This function groups WakatimeItem objects based on the provided groups dictionary.
+    - It first creates grouped items for each group by combining items using _combine_items().
+    - Non-grouped items are filtered based on already grouped item names.
+    - Finally, it sorts the grouped data by total seconds in descending order.
+    """
     if groups is None:
         return data
 
