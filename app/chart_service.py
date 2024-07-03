@@ -233,6 +233,20 @@ def _filter_wildcard_items(
 
 
 def _combine_items(item_one: WakatimeItem, item_two: WakatimeItem) -> WakatimeItem:
+    """
+    Combines two WakatimeItem objects into a single WakatimeItem, aggregating their metrics.
+
+    Parameters:
+    item_one (WakatimeItem): The first WakatimeItem to combine.
+    item_two (WakatimeItem): The second WakatimeItem to combine.
+
+    Returns:
+    WakatimeItem: A new WakatimeItem object representing the combined metrics of item_one and item_two.
+
+    Notes:
+    - This function calculates the combined total seconds, percentage, hours, and minutes from item_one and item_two.
+    - If combined_minutes exceed 59, they are converted into additional hours.
+    """
     combined_total_seconds: float = item_one.total_seconds + item_two.total_seconds
     combined_percent: float = item_one.percent + item_two.percent
     combined_hours: int = item_one.hours + item_two.hours
