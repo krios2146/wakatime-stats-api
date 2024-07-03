@@ -1,124 +1,260 @@
-# wakatime-stats-aggregator
+# wakatime-stats-api
 
-Telegram bot for fetching personal stats from the Wakatime using their API and creating charts based on the data
+The WakaTime Stats API is a tool
+for generating charts based on your last 7 days of coding data from [Wakatime](https://wakatime.com/).
+It uses [Matplotlib](https://matplotlib.org/) to make the charts
+and connects to the [Wakatime API](https://wakatime.com/developers) to get your data.
+
+Built with Python [FastAPI](https://fastapi.tiangolo.com/), it's quick and easy to use,
+perfect for developers who want to visualize their coding activity without much hassle.
+
+You can customize the API to hide certain data, group items, change colors, and adjust the size of your charts.
+It even supports wildcards for more flexible data handling
+and uses [GitHub language colors](https://github.com/github-linguist/linguist/blob/master/lib/linguist/languages.yml) to color code programming languages.
+
+## Table of Contents
+
+- [Showcase](#showcase)
+- [Features](#features)
+- [Usage/Examples](#usageexamples)
+- [API Reference](#api-reference)
+- [Local run](#local-run)
+- [Deployment](#deployment)
+- [License](#license)
 
 ## Showcase
 
-![image](https://github.com/krios2146/wakatime-stats-aggregator/assets/91407999/de7c92cc-9a92-40f2-900d-22ce7ed8c013)
+#### API call
+```
+GET https://{domain}/api/{your_wakatime_username}/pie/languages
+  ?hide=http**,**ml,docker**,json
+  &width=420
+  &height=215
+  &vue.js=41b883
+  &bash=89e051
+```
+
+#### Result
+
+![image](https://github.com/krios2146/wakatime-stats-api/assets/91407999/732ea5be-7bcc-4cb1-8d0c-32ac66171612)
 
 ## Features
 
-Pie chart generation for the projects, languages and editors data obtained form the Wakatime API
+- API allows hiding any data you don't want to show
+- API allows defining groups of data. Useful if you don't want to show names of your work-related / confidential projects
+- API allows changing color of any data
+- API allows changing the output size of the image
+- API allows using wildcard (`**`) when hiding or defining groups
+- API uses [GitHub languages colors](https://github.com/github-linguist/linguist/blob/master/lib/linguist/languages.yml) for coloring languages in the `/languages` endpoint 
 
-Telegram bot serves as an interface for triggering the process of chart creation
+## Usage/Examples
 
-Chart for languages uses [GitHub languages colors](https://github.com/github-linguist/linguist/blob/master/lib/linguist/languages.yml) for generation. 
-If color isn't present in the github-linguist then the default matplotlib color will be used
+#### Hiding all languages that start with "docker" and "java" (Dockerfile, Java, JavaScript) [case-insensitive]
 
-All charts are saved under the plots directory (should be created manually)
+```
+GET https://{domain}/api/{your_wakatime_username}/pie/languages
+  ?hide=docker**,java**
+```
 
-## Modules
+#### Hiding all languages that ends with "ml" (YAML, HTML) [case-insensitive]
 
-Short descirption of each module
+```
+GET https://{domain}/api/{your_wakatime_username}/pie/languages
+  ?hide=**ml
+```
 
-### `api_client.py`
+#### Grouping work-related projects that start with "curo" and "compose-stack" specifically [case-insensitive]
 
-Used for API calls
+```
+GET https://{domain}/api/{your_wakatime_username}/pie/projects
+  ?group=work-related
+  &work-related=curo**,compose-stack
+```
 
-Wakatime API URL is build like this `${WAKATIME_BASE_URL}/users/${WAKATIME_USER}/last_7_days`. 
-Will be called every time any bot command is called
+#### Changing colors of a group and projects individually [HEX and color names]
 
-If /languages bot command is called then `https://raw.githubusercontent.com/github-linguist/linguist/master/lib/linguist/languages.yml` will be fetched
+```
+GET https://{domain}/api/{your_wakatime_username}/pie/projects
+  ?group=work-related
+  &work-related=curo**,compose-stack
+  &work-related_colors=black
+  &wakatime-api-stats=e5e7eb
+```
 
----
+#### Changing size of the output image [pixels]
 
-### `telegram_bot.py`
+```
+GET https://{domain}/api/{your_wakatime_username}/pie/editors
+  ?width=650
+  &height=300
+```
 
-Uses `api_client` to get data, pass it to the `data_processor` and show the chart obtained by `image_manager`
+## API Reference
 
-Have 4 commands:
-- /start
-- /languages
-- /editors
-- /projects
+Swagger UI is available on the `/docs` endpoint, but it doesn't cover all available GET parameters
 
-For the /languages command [github-linguist](https://github.com/github-linguist/linguist) `languages.yml` file is fetched via `api_client`
+<details>
+<summary> Excalidraw API Spec [under the spoiler]</summary>
+<p>
 
----
+![wakatime-api-spec](https://github.com/krios2146/wakatime-stats-api/assets/91407999/bbec3051-7a1c-4dab-aecf-5f4a18351f67)
 
-### `data_processor.py`
+</p>
+</details>
 
-Uses [matplotlib](https://matplotlib.org/stable/) to build charts for every bot command.
-Charts are saved under `plots` directory. 
-Chart names follow the pattern - `${UUID}_${date}.png`, 
-where `UUID` is the UUID of a request, and `date` is a date in the YY-MM-DD format
+#### Languages
 
----
+```http
+GET /api/{username}/pie/languages
+```
 
-### `image_manager.py`
+| Parameter         | Type                  | Description                                                                                                                                                                                 |
+|:------------------|:----------------------|:--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `username`        | `string`              | **Required**. Your WakaTime username                                                                                                                                                        |
+| `hide`            | `string`, `string []` | Exact name of the language to hide. <br/> Wildcard `**` name of the language to hide with prefix** or **suffix. <br/> **Case-insensitive** <br/> Multiple value must be comma `,` separated |
+| `{language_name}` | `string`              | Key is exact name of the language **case-insensitive**. <br/> Value is color in the HEX format (with or without `#`)                                                                        |
+| `width`           | `number`              | Width of the output image in pixels                                                                                                                                                         |
+| `height`          | `number`              | Height of the output image in pixels                                                                                                                                                        |
 
-Used by `data_processor` to save charts to the charts and by `telegram_bot` to retrieve the chart by its UUID
+#### Editors
+
+```http
+GET /api/{username}/pie/editors
+```
+
+| Parameter       | Type                  | Description                                                                                                                                                                             |
+|:----------------|:----------------------|:----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `username`      | `string`              | **Required**. Your WakaTime username                                                                                                                                                    |
+| `hide`          | `string`, `string []` | Exact name of the editor to hide. <br/> Wildcard `**` name of the editor to hide with prefix** or **suffix. <br/> **Case-insensitive** <br/> Multiple value must be comma `,` separated |
+| `{editor_name}` | `string`              | Key is exact name of the editor **case-insensitive**. <br/> Value is color in the HEX format (with or without `#`)                                                                      |
+| `width`         | `number`              | Width of the output image in pixels                                                                                                                                                     |
+| `height`        | `number`              | Height of the output image in pixels                                                                                                                                                    |
+
+#### Projects
+
+```http
+GET /api/{username}/pie/projects
+```
+
+| Parameter            | Type                  | Description                                                                                                                                                                                                                                              |
+|:---------------------|:----------------------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `username`           | `string`              | **Required**. Your WakaTime username                                                                                                                                                                                                                     |
+| `hide`               | `string`, `string []` | Exact name of the project or group to hide. <br/> Wildcard name of the project (or group) to hide with prefix** or **suffix. <br/> **Case-insensitive** <br/> Multiple value must be comma `,` separated                                                 |
+| `{project_name}`     | `string`              | Key is exact name of the project **case-insensitive**. <br/> Value is color in the HEX format (with or without `#`)                                                                                                                                      |
+| `width`              | `number`              | Width of the output image in pixels                                                                                                                                                                                                                      |
+| `height`             | `number`              | Height of the output image in pixels                                                                                                                                                                                                                     |
+| `group`              | `string`              | Name of the group that can be used in other parameters                                                                                                                                                                                                   |
+| `{group_name}`       | `string`, `string []` | Key is exact name of the group. <br/> Value is exact name of the project to include in the group. <br/> Wildcard `**` name of the project to hide with prefix** or **suffix. <br/> **Case-insensitive** <br/> Multiple value must be comma `,` separated |
+| `{group_name}_color` | `string`              | Key is exact name of the group with following `_color` suffix. <br/> Value is color in the HEX format (with or without `#`)                                                                                                                              |
 
 ## Local run
 
 1. Clone project
 
-```bash
-git clone git@github.com:krios2146/wakatime-stats-aggregator.git
-```
+    ```bash
+    git clone git@github.com:krios2146/wakatime-stats-api.git
+    ```
 2. Go to project directory
 
-```bash
-cd wakatime-stats-aggregator
-```
+    ```bash
+    cd wakatime-stats-api
+    ```
 
 3. Create `.env` file
 
+    ```bash
+    touch .env
+    ```
+
+    The content of the `.env` is the following
+    ```env
+    WAKATIME_BASE_URL=https://wakatime.com/api/v1
+    WAKATIME_API_KEY=waka_**
+    ```
+
+    - [How to get WAKATIME_API_KEY](https://wakatime.com/faq#api-key)
+
+4. Set up venv
+
+    Assuming that python is installed
+
+    ```bash
+    python -m venv
+    ```
+
+    ```bash
+    source venv/biv/activate
+    ```
+
+    ```bash
+    pip install -r requirements.txt
+    ```
+
+5. Start the API
+
+    In dev mode with debug log configuration
+    ```bash
+    uvicorn app.main:app --reload --log-config=debug_log_config.yam
+    ```
+
+    In production mode with fast api cli
+    ```bash
+    fastapi run
+    ```
+
+6. Alternatively, you can run it inside a Docker container
+
+    Build
+    ```bash
+    docker build . -t wakatime-stats-api
+    ```
+
+    Run
+    ```bash
+    docker run -d -p 80:8000 --env-file .env wakatime-stats-api
+    ```
+
+7. Call the API
+
+    In browser type
+    ```
+    localhost:8000/api/{your_wakatime_username}/pie/languages
+    ```
+
+## Deployment
+
+To deploy this project and use it for your own purposes, you need a VPS
+
+The steps are the same as in [Local run](#local-run) section
+
+The easiest way is to deploy using docker
+
+---
+
+Run locally after cloning the project 
+
 ```bash
-touch .env
-```
-
-The content of the `.env` is the following
-```env
-WAKATIME_API_KEY=''
-WAKATIME_BASE_URL='https://wakatime.com/api/v1'
-WAKATIME_USER=''
-TELEGRAM_API_TOKEN=''
-```
-
-- [How to get WAKATIME_API_KEY](https://wakatime.com/faq#api-key)
-- [How to get TELEGRAM_API_TOKEN](https://core.telegram.org/bots/tutorial#obtain-your-bot-token) 
-
-4. Create `plots` directory
-
-```bash
-mkdir plots 
-```
-
-5. Set up venv
-
-Assuming that python is installed
-
-```bash
-python -m venv
+docker build . -t {docker_username}/wakatime-stats-api
 ```
 
 ```bash
-source venv/biv/activate
+docker push {docker_username}/wakatime-stats-api
 ```
+
+---
+
+Run on the VPS, assuming you have docker installed
 
 ```bash
-pip install -r requirements.txt
+docker pull {docker_username}/wakatime-stats-api
 ```
 
-6. Start the bot
+Remember about .env file
 
-```bash
-python src/telegram_bot.py
-```
+ ```bash
+ docker run -d -p 80:8000 --env-file .env {docker_username}/wakatime-stats-api
+ ```
 
-7. In your bot first type /start and then one of the following commands:
+## License
 
-- /languages
-- /editors
-- /projects
+[MIT](https://choosealicense.com/licenses/mit/)

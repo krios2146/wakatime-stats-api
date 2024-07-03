@@ -27,6 +27,24 @@ def create_pie_chart(
     height: int | None,
     width: int | None,
 ) -> None:
+    """
+    Creates a pie chart using Matplotlib based on the provided data.
+
+    Parameters:
+    data_list (list[WakatimeItem]): A list of WakatimeItem objects containing data for the pie chart.
+    uuid (UUID): A unique identifier for the chart.
+    colors_data (dict[str, str] | None): A dictionary mapping item names to colors. If None, default colors are used.
+    height (int | None): Height of the chart in inches. If None, uses default size.
+    width (int | None): Width of the chart in inches. If None, uses default size.
+
+    Returns:
+    None
+
+    Notes:
+    - This function creates a pie chart with the top 5 items from data_list based on percent.
+    - If colors_data is provided, it maps colors to corresponding items; otherwise, default colors are used.
+    - The chart is saved using chart_manager.save_chart() with the provided uuid.
+    """
     log.info(f"Creating pie chart {uuid}")
     box, (left_plot, right_plot) = plt.subplots(1, 2)  # type: ignore[all]
 
@@ -77,6 +95,22 @@ def create_pie_chart(
 def _map_colors(
     item_colors: dict[str, str] | None, items: list[WakatimeItem]
 ) -> list[str | tuple[float, float, float, float]] | None:
+    """
+    Maps colors to items based on item_colors dictionary.
+
+    Parameters:
+    item_colors (dict[str, str] | None): A dictionary mapping item names to colors. If None, returns None.
+    items (list[WakatimeItem]): A list of WakatimeItem objects to map colors to.
+
+    Returns:
+    list[str | tuple[float, float, float, float]] | None: A list of colors corresponding to items.
+                                                         Returns None if item_colors is None.
+
+    Notes:
+    - This function maps colors to items based on the item_colors dictionary.
+    - If item_colors is None, returns None indicating no color mapping.
+    - Uses default colors from plt.get_cmap("tab10") for items without specified colors.
+    """
     if item_colors is None:
         return None
 

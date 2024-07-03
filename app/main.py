@@ -128,6 +128,15 @@ def editors(
 
 
 def _parse_hide_list(hide_query: list[str] | None) -> set[str] | None:
+    """
+    Parses a list of strings, each containing comma-separated values, into a set of lowercase strings.
+
+    Parameters:
+    hide_query (list[str] | None): A list of comma-separated strings or None.
+
+    Returns:
+    set[str] | None: A set of unique lowercase strings or None if hide_query is None.
+    """
     if hide_query is None:
         return None
 
@@ -140,6 +149,15 @@ def _parse_hide_list(hide_query: list[str] | None) -> set[str] | None:
 
 
 def _parse_hide(hide_query: str | None) -> set[str] | None:
+    """
+    Parses a comma-separated string into a set of lowercase strings.
+
+    Parameters:
+    hide_query (str | None): A comma-separated string or None.
+
+    Returns:
+    set[str] | None: A set of unique lowercase strings or None if hide_query is None or empty.
+    """
     if hide_query is None:
         return None
 
@@ -188,6 +206,20 @@ def _parse_group(
 def _parse_project_colors(
     query: QueryParams, groups: list[str] | None
 ) -> dict[str, str] | None:
+    """
+    Parses query parameters to extract project colors, ignoring all other keys.
+
+    Parameters:
+    query (QueryParams): An object containing query parameters.
+    groups (list[str] | None): A list of group names to exclude from the query or None.
+
+    Returns:
+    dict[str, str] | None: A dictionary mapping project identifiers to their colors,
+    or None if no project colors are found.
+
+    See Also:
+    _parse_group: For parsing group-related query parameters.
+    """
     project_colors: dict[str, str] | None = None
 
     for query_item in query.items():
@@ -210,6 +242,20 @@ def _parse_project_colors(
 
 
 def _parse_colors(query: QueryParams | None) -> dict[str, str] | None:
+    """
+    Parses query parameters to extract key-value pairs representing colors.
+    Use _parse_project_colors for parsing project_colors specifically.
+
+    Parameters:
+    query (QueryParams | None): An object containing query parameters, or None.
+
+    Returns:
+    dict[str, str] | None: A dictionary mapping keys to their corresponding color values,
+    or None if query is None or does not contain any valid color-related parameters.
+
+    See Also:
+    _parse_project_colors: For parsing group-related query parameters.
+    """
     if query is None:
         return None
 
