@@ -198,6 +198,17 @@ def _filter(items: list[WakatimeItem], item_names: set[str]) -> list[WakatimeIte
 def _filter_items(
     items: list[WakatimeItem], item_names: set[str]
 ) -> list[WakatimeItem]:
+    """
+    Filters a list of WakatimeItem objects based on exclusion criteria in item_names.
+    Items whose names (case-insensitive) match any entry in item_names are excluded from the filtered list.
+
+    Parameters:
+    items (list[WakatimeItem]): A list of WakatimeItem objects to filter.
+    item_names (set[str]): A set of item names to exclude from the filtered list.
+
+    Returns:
+    list[WakatimeItem]: A filtered list of WakatimeItem objects excluding those with names in item_names.
+    """
     return list(filter(lambda x: x.name.lower() not in item_names, items))
 
 
