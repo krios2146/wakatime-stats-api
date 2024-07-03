@@ -5,10 +5,10 @@ from fastapi.datastructures import QueryParams
 from fastapi.responses import FileResponse
 
 from . import chart_service
-from .model.chart import Chart
-from .model.chart_data import ChartData
-from .model.chart_type import ChartType
-from .model.chart_request import ChartRequest
+from .model.chart.chart import Chart
+from .model.chart.chart_data_type import ChartDataType
+from .model.chart.chart_type import ChartType
+from .model.chart.chart_request import ChartRequest
 
 
 log = logging.getLogger(__name__)
@@ -32,7 +32,7 @@ def languages(
 
     chart_request: ChartRequest = ChartRequest(
         ChartType.PIE,
-        ChartData.LANGUAGES,
+        ChartDataType.LANGUAGES,
         username,
         hide=languages_to_hide,
         colors=language_colors,
@@ -76,7 +76,7 @@ def projects(
 
     chart_request: ChartRequest = ChartRequest(
         ChartType.PIE,
-        ChartData.PROJECTS,
+        ChartDataType.PROJECTS,
         username,
         hide=elements_to_hide,
         colors=project_colors,
@@ -109,7 +109,7 @@ def editors(
 
     chart_request: ChartRequest = ChartRequest(
         ChartType.PIE,
-        ChartData.EDITORS,
+        ChartDataType.EDITORS,
         username,
         hide=editors_to_hide,
         colors=editor_colors,
