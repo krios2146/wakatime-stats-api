@@ -206,6 +206,20 @@ def _parse_group(
 def _parse_project_colors(
     query: QueryParams, groups: list[str] | None
 ) -> dict[str, str] | None:
+    """
+    Parses query parameters to extract project colors, ignoring all other keys.
+
+    Parameters:
+    query (QueryParams): An object containing query parameters.
+    groups (list[str] | None): A list of group names to exclude from the query or None.
+
+    Returns:
+    dict[str, str] | None: A dictionary mapping project identifiers to their colors,
+    or None if no project colors are found.
+
+    See Also:
+    _parse_group: For parsing group-related query parameters.
+    """
     project_colors: dict[str, str] | None = None
 
     for query_item in query.items():
