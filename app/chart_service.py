@@ -86,6 +86,21 @@ def create_chart(chart_request: ChartRequest) -> Chart | None:
 def _merge_github_lang_colors(
     param_colors: dict[str, str] | None, github_languages: list[GithubLanguageItem]
 ) -> dict[str, str] | None:
+    """
+    Merges GitHub language colors with parameter colors, prioritizing parameter colors.
+
+    Parameters:
+    param_colors (dict[str, str] | None): A dictionary mapping language names to colors. If None, returns GitHub language colors.
+    github_languages (list[GithubLanguageItem]): A list of GitHubLanguageItem objects containing language names and colors.
+
+    Returns:
+    dict[str, str] | None: A merged dictionary mapping language names to colors, giving priority to parameter colors.
+                           Returns GitHub language colors if param_colors is None.
+
+    Notes:
+    - This function merges GitHub language colors with parameter colors, giving priority to parameter colors if both dictionaries contain the same language names.
+    - If param_colors is None, returns GitHub language colors directly.
+    """
     github_colors: dict[str, str] = {
         github_language.name: github_language.color
         for github_language in github_languages
