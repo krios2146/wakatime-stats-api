@@ -191,6 +191,21 @@ def _group(
 
 
 def _filter(items: list[WakatimeItem], item_names: set[str]) -> list[WakatimeItem]:
+    """
+    Filters a list of WakatimeItem objects based on both wildcard patterns and exclusion criteria.
+
+    Parameters:
+    items (list[WakatimeItem]): A list of WakatimeItem objects to filter.
+    item_names (set[str]): A set of item names containing both wildcard patterns and specific names to exclude.
+
+    Returns:
+    list[WakatimeItem]: A filtered list of WakatimeItem objects that do not match any wildcard patterns or exclusion criteria.
+
+    Notes:
+    - This function first filters items based on wildcard patterns ('**' suffixes and prefixes) in item_names.
+    - Then, it filters the resulting items based on exclusion criteria in item_names.
+    - The function utilizes _filter_wildcard_items() and _filter_items() internally to perform the filtering.
+    """
     filtered_wildcards = _filter_wildcard_items(items, item_names)
     return _filter_items(filtered_wildcards, item_names)
 
