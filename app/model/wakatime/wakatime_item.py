@@ -2,7 +2,7 @@ from dataclasses import dataclass
 
 
 @dataclass
-class WakatimeItemDto:
+class WakatimeItem:
     total_seconds: float
     name: str
     percent: float

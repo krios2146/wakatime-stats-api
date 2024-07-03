@@ -1,8 +1,8 @@
 from dataclasses import dataclass
 
-from .wakatime_data_dto import WakatimeDataDto
+from .wakatime_data import WakatimeData
 
 
 @dataclass
 class WakatimeResponse:
-    data: WakatimeDataDto
+    data: WakatimeData
