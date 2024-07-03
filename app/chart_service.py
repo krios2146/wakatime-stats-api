@@ -122,6 +122,25 @@ def _merge_group_colors(
 
 
 def _normalize_colors(colors: dict[str, str] | None) -> dict[str, str] | None:
+    """
+    Normalizes color values in a dictionary to ensure they are formatted consistently.
+
+    Parameters:
+    colors (dict[str, str] | None): A dictionary mapping keys to color values, or None.
+
+    Returns:
+    dict[str, str] | None: A dictionary with normalized color values, or None if colors is None.
+
+    Example:
+    colors = {"python": "3572A5", "java": "#B07219"}
+    normalized_colors = _normalize_colors(colors)
+    # normalized_colors is now {"python": "#3572A5", "java": "#B07219"}
+
+    Notes:
+    This function ensures that color values follow a consistent format by checking each value:
+    - If a color value is a valid hex code without a leading '#', it adds the '#' prefix.
+    - If colors is None, returns None without modification.
+    """
     if colors is None:
         return None
 
