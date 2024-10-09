@@ -224,32 +224,56 @@ GET /api/{username}/pie/projects
 
 To deploy this project and use it for your own purposes, you need a VPS
 
-The steps are the same as in [Local run](#local-run) section
+### Deploy using GitHub package
 
-The easiest way is to deploy using docker
+This is the easiest way to deploy. Use the GitHub package Docker image of the project
 
----
+Run on the VPS, assuming you have Docker installed:
 
-Run locally after cloning the project 
+1. Pull the image
+   
+  ```bash
+  docker pull ghcr.io/krios2146/wakatime-stats-api:latest
+  ```
 
-```bash
-docker build . -t {docker_username}/wakatime-stats-api
-```
+2. Don't forget to include the `.env` file
+   
+  ```bash
+  docker run -d -p 80:8000 --env-file .env ghcr.io/krios2146/wakatime-stats-api:latest
+  ```
 
-```bash
-docker push {docker_username}/wakatime-stats-api
-```
+### Deploy using Docker
 
----
+The only difference with the previous variant is that you should build the Docker image from source before deployment
 
-Run on the VPS, assuming you have docker installed
+Run the following locally after cloning the project:
 
-```bash
-docker pull {docker_username}/wakatime-stats-api
-```
+1. Build the image
+  
+  ```bash
+  docker build . -t {docker_username}/wakatime-stats-api
+  ```
 
-Remember about .env file
+2. Push the image to your Docker repository
 
- ```bash
- docker run -d -p 80:8000 --env-file .env {docker_username}/wakatime-stats-api
- ```
+  ```bash
+  docker push {docker_username}/wakatime-stats-api
+  ```
+
+Run on the VPS, assuming you have Docker installed:
+
+3. Pull the image
+   
+  ```bash
+  docker pull {docker_username}/wakatime-stats-api
+  ```
+
+4. Don't forget to include the `.env` file
+
+  ```bash
+  docker run -d -p 80:8000 --env-file .env {docker_username}/wakatime-stats-api
+  ```
+
+### Deploy without Docker
+
+The steps are the same as in the [Local run](#local-run) section but should be executed on the VPS
